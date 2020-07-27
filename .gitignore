@@ -1,0 +1,4 @@
+.vscode
+sih.code-workspace
+**/__pycache__
+**/models
