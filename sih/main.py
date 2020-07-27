@@ -18,13 +18,13 @@ def index_docs(es, index):
             data += line
         #paras = data.split('\n\n')
         subparas = []
-        for p in re.split(r"\n\n|\n\t|\t|\n   *", data):
-            lines = re.split(r"\n|\.|\?|\!", p)
-            if(len(lines)<=2):
+        for p in re.split(r"\n\n|\n\t|\n   *", data):
+            lines = re.findall(r".*?[.!\?]", p)
+            if((len(p.splitlines()) == 1) and (len(lines)<=3)):
                 continue
             cnt = 0
             subpara = ''
-            for line in lines:
+            for line in lines:        
                 if(cnt<3):
                     subpara += (line+'.')
                     cnt+=1
@@ -40,10 +40,10 @@ def index_docs(es, index):
                     "_index": index,
                     "text": p,
                 }
-        start = timer()
+        #start = timer()
         helpers.bulk(es, gendata(), request_timeout=60)
-        end = timer()
-        print(end-start)
+        #end = timer()
+        #print(end-start)
 
 def retrieve_docs(es, index, qsn):
     result = es.search(index=index, body={
