@@ -30,7 +30,7 @@ def index():
 
 			# elasticsearch indexing...
 			index = form.name.data
-			myfunctions.indexing(index, filename)
+			myfunctions.index_docs(index, filename)
 
 		else:
 			flash('Allowed file types are txt, pdf, docx')
@@ -54,7 +54,7 @@ def search():
 		print(query)
 
 		# elasticsearch searching...
-		results = myfunctions.search_documents(index, query)
+		results = myfunctions.retrieve_docs(index, query)
 		print(results)
 
 		return redirect(url_for('search'))

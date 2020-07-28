@@ -19,7 +19,7 @@ def index_docs(es, index):
         #paras = data.split('\n\n')
         subparas = []
         for p in re.split(r"\n\n|\n\t|\n   *", data):
-            lines = re.findall(r".*?[.!\?]", p)
+            lines = re.findall(r".*?[.!?]", p)
             if((len(p.splitlines()) == 1) and (len(lines)<=3)):
                 continue
             cnt = 0
