@@ -1,0 +1,22 @@
+<html>
+	<head>
+		<title>Searchify</title>
+	</head>
+	<body>
+		<div><a href="{{ url_for('index') }}">Upload</a></div>
+		<div><a href="{{ url_for('search') }}">Search</a></div>
+		<hr>
+
+		{% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+		{% block content %}{% endblock %}
+	</body>
+</html>

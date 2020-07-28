@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+	<h2>Ask your Question!</h2>
+	<form method="POST" action="#" enctype="multipart/form-data">
+		{{ form.hidden_tag() }}
+		<p>
+			{{ form.index.label }}<br>
+			{{ form.index() }}
+			{% for error in form.index.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+        	{{ form.query.label }}<br>
+        	{{ form.query() }}
+        	{% for error in form.query.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+        	{{ form.submit() }}
+        </p>
+    </form>
+
+{% endblock %}
