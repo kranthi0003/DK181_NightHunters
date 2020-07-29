@@ -16,11 +16,11 @@ def index():
 	if((form.validate_on_submit()) and ('submit' in request.form)):
 		file = request.files['file']
 		if(file.filename == ''):
-			flash('No file selected for uploading')
-			return redirect(request.url)
+			print('No file selected for uploading')
+			#return redirect(request.url)
 
 		# checking if the uploaded file extension is allowed...
-		if(file and myfunctions.allowed_extension(file.filename)):
+		elif(file and myfunctions.allowed_extension(file.filename)):
 			filename = secure_filename(file.filename)
 			print('Book "{}" uploaded successfully!'.format(form.name.data)) #flash
 
@@ -36,7 +36,7 @@ def index():
 
 		else:
 			print('Allowed file types are txt, pdf, docx') #flash
-			return redirect(request.url)
+			#return redirect(request.url)
 
 	return render_template('index.html', title='Upload', form=form)
 

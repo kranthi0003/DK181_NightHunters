@@ -1,4 +1,4 @@
-import re
+'''import re
 import nltk.data
 
 tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
@@ -16,3 +16,4 @@ with open('data\\test7.txt','r',encoding='utf8') as reader:
         while(cnt < len(liness)):
             subparas.append(' '.join(liness[cnt:cnt+3]))
             cnt+=3
+'''
