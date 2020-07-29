@@ -8,6 +8,8 @@ from rake_nltk import Rake
 import re
 import docx2txt
 import nltk.data
+import shutil
+from pdfminer.high_level import extract_text
 
 from transformers import BertTokenizer, TFBertForQuestionAnswering
 import os
@@ -18,41 +20,52 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf'])
 
 es = Elasticsearch('http://localhost:9200')
 r = Rake()
+
 model_tokenizer = BertTokenizer.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
 model = TFBertForQuestionAnswering.from_pretrained('data\\models\\bert_large')
+
 
 tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 
 def allowed_extension(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
-
 def convert_to_text(filename):
-	extension = filename.split('.')[1]
-	source_file = 'data\\books\\'+filename
-	destination_file = 'data\\converted_books\\'+filename.split('.')[0]+'.txt'
+    extension = filename.split('.')[1]
+    source_file = 'data\\books\\'+filename
+    destination_file = 'data\\converted_books\\'+filename.split('.')[0]+'.txt'
 
 	# pdf to txt...
-	if(extension == 'pdf'):
-		pdfFileObj = open(source_file, 'rb')
-		pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
-		num = pdfReader.numPages
-		i =0
-		file_res = open(destination_file,'w',encoding='UTF-8')
-		while(i<num):
-			pageObj = pdfReader.getPage(i)
-			text=pageObj.extractText()
-			file_res.write('\n\nPage: '+str(i+1)+'\n\n'+text)
-			i=i+1
-		pdfFileObj.close()
+    if(extension == 'pdf'):
+        '''
+        pdfFileObj = open(source_file, 'rb')
+        pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+        num = pdfReader.numPages
+        i =0
+        file_res = open(destination_file,'w',encoding='UTF-8')
+        while(i<num):
+            pageObj = pdfReader.getPage(i)
+            text=pageObj.extractText()
+            file_res.write('\n\nPage: '+str(i+1)+'\n\n'+text)
+            i=i+1
+        pdfFileObj.close()
+        '''
+        text = extract_text(source_file)
+        time.sleep(5)
+        with open(destination_file,'w') as f:
+            f.write(text)
 
 	# docx to txt...
-	elif(extension == 'docx'):
-		text = docx2txt.process(source_file)
-		f = open(destination_file,"w+")
-		f.write(text)
+    elif(extension == 'docx'):
+        text = docx2txt.process(source_file)
+        f = open(destination_file,"w+")
+        f.write(text)
+        f.close()
+    else:
+        shutil.copy(source_file, 'data\\converted_books')
 
+def get_indices():
+    return es.indices.get_alias("*")
 
 def extract_keywords(text):
     r.extract_keywords_from_text(text)
@@ -61,7 +74,7 @@ def extract_keywords(text):
 
 def index_docs(index, filename):
     data = ''
-    with open('data\\'+filename+'.txt','r',encoding='utf8') as reader:
+    with open('data\\converted_books\\'+filename+'.txt','r',encoding='utf8') as reader:
         for line in reader:
             data += line
     subparas = []
@@ -82,6 +95,7 @@ def index_docs(index, filename):
     #start = timer()
     print('Indexing started')
     helpers.bulk(es, gen_data(), request_timeout=60)
+    print('Indexnig end')
     time.sleep(5)
     es.indices.refresh()
     #end = timer()

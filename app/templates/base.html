@@ -13,11 +13,10 @@
 	</head>
 	<body>
 		<div class="sidenav">
-		    <h3 class="navtitle">Books</h3><hr>
-			<a href="#about">A</a>
-			<a href="#services">B</a>
-			<a href="#clients">C</a>
-			<a href="#contact">D</a>
+			<h3 class="navtitle">Books</h3><hr>
+			{% for b in books %}
+				<a href = '{{ "search?index=" +  b }}'>{{ b }}</a>
+			{% endfor %}
 		</div>
 
 		<nav class="navbar navbar-expand-md bg-dark navbar-dark">

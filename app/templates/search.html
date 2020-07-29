@@ -7,11 +7,18 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <form method="POST" action="#" enctype="multipart/form-data">
-                    {{ form.hidden_tag() }}
-
                     <div class="form-group"><br><br>
                         <label class="align-baseline"><b>Name of the Book</b></label>
-                        {{ form.index }}
+                        {{ form.hidden_tag() }}
+                        
+                        {% if request.args.get('index') %}
+                            {% macro get_index() -%}
+                                {{request.args.get('index')}}
+                            {%- endmacro %}
+                            {{ form.index(value =  get_index()) }}
+                        {% else %}
+                            {{ form.index }}
+                        {% endif %}
                     </div>
 
                     <div class="form-group"><br><br>
