@@ -1,6 +1,6 @@
 **/models
 dotenv.flaskenv
-**/__pycache__
-**/.vscode
+**/__pycache__/
+**/.vscode/
 **/.pyc
 **/.code-workspace
