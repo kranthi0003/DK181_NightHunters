@@ -4,6 +4,7 @@ from app.forms import UploadForm, SearchForm
 from werkzeug.utils import secure_filename
 import urllib.request
 import os
+import time
 
 import app.helpers as myfunctions
 
@@ -21,7 +22,7 @@ def index():
 		# checking if the uploaded file extension is allowed...
 		if(file and myfunctions.allowed_extension(file.filename)):
 			filename = secure_filename(file.filename)
-			flash('Book "{}" uploaded successfully!'.format(form.name.data))
+			print('Book "{}" uploaded successfully!'.format(form.name.data)) #flash
 
 			# converting any type of document into txt...
 			if(filename.split('.')[1] != 'txt'):
@@ -31,12 +32,11 @@ def index():
 			# elasticsearch indexing...
 			index = form.name.data
 			myfunctions.index_docs(index, filename)
+			print('Indexing done')
 
 		else:
-			flash('Allowed file types are txt, pdf, docx')
+			print('Allowed file types are txt, pdf, docx') #flash
 			return redirect(request.url)
-
-		return redirect(url_for('index'))
 
 	return render_template('index.html', title='Upload', form=form)
 
@@ -49,14 +49,19 @@ def search():
 		query = form.query.data
 
 		# keyword extraction...
-		keywords = myfunctions.extract_keywords(query)
-		query = " ".join(keywords)
-		print(query)
-
+		modified_query = myfunctions.extract_keywords(query)
+		
 		# elasticsearch searching...
-		results = myfunctions.retrieve_docs(index, query)
-		print(results)
-
-		return redirect(url_for('search'))
-
+		results = myfunctions.retrieve_docs(index, modified_query)
+		time.sleep(5)
+		print(myfunctions.get_answer(query, results[0]))
+		#return redirect(url_for('search'))
+		'''
+		print('Choose one.\n1. Short answer\n2. Long answer\n')
+        x = int(input())
+        if(x==1):
+            print('Answer:',bertqa.answer(qsn, l[0]),end='\n\n')
+        elif(x==2):
+            print('Answer:',l[0],'\n\n')
+		'''
 	return render_template('search.html', title='Search', form=form)

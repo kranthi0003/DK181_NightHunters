@@ -1,7 +1,7 @@
 from elasticsearch import Elasticsearch, helpers
 from timeit import default_timer as timer
 #import similarity as sim
-import bertqa
+#import bertqa
 import time
 from rake_nltk import Rake
 import re
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     while(qsn != 'exit'):
         qsn = input("Question?\n")
         modified_qsn = get_keywords(qsn)
-        #print(modified_qsn)
+        print(modified_qsn)
         l = retrieve_docs(es,index,modified_qsn)
         time.sleep(5)
         #print(qsn)

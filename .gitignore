@@ -1,0 +1,5 @@
+**/models
+dotenv.flaskenv
+**/__pycache__
+**/.vscode
+**/.pyc
