@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Quester</title>
+		<meta charset="utf-8">
+	  	<meta name="viewport" content="width=device-width, initial-scale=1">
+	  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+	  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	  	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+	</head>
+	<body>
+		<div class="sidenav">
+		    <h3 class="navtitle">Books</h3><hr>
+			<a href="#about">A</a>
+			<a href="#services">B</a>
+			<a href="#clients">C</a>
+			<a href="#contact">D</a>
+		</div>
+
+		<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+			<!-- Brand -->
+			<a class="navbar-brand" href="#"><img src="your-logo"/></a>
+
+			<!-- Toggler/collapsibe Button -->
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<!-- Navbar links -->
+			<div class="collapse navbar-collapse mx-auto justify-content-md-center" id="collapsibleNavbar" >
+				<ul class="navbar-nav col-md-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="#"><h3>Quester</h3></a>
+					</li>
+				</ul>
+			</div> 
+		</nav>
+
+		<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+			<!-- Brand -->
+			<a class="navbar-brand" href="#"><img src="your-logo"/></a>
+
+			<!-- Toggler/collapsibe Button -->
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<!-- Navbar links -->
+			<div class="collapse navbar-collapse mx-auto justify-content-md-center" id="collapsibleNavbar" >
+				<ul class="navbar-nav col-md-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="{{ url_for('index') }}"><h4 class="activel">Upload a book</h4></a>
+					</li>
+				</ul>
+			</div> 
+
+			<div class="collapse navbar-collapse mx-auto justify-content-md-center" id="collapsibleNavbar" >
+				<ul class="navbar-nav col-md-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="{{ url_for('search') }}"><h4 class="activel">Search</h4></a>
+					</li>
+				</ul>
+			</div> 
+		</nav>
+
+		{% block content %}{% endblock %}
+
+	</body>
+</html>

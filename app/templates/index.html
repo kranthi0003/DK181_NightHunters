@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+	<center>
+		<div class="container  fileuploader ">
+			<div class="row justify-content-center">
+				<div class="col-md-8 uploader">
+					<form method="POST" action="/index" class="justify-content-center" enctype="multipart/form-data">
+						{{ form.hidden_tag() }}
+
+						{{ form.name.label }}
+						{{ form.name() }}<br>
+						
+						{{ form.file() }}
+						<input type="image" class="dropimg" src="../static/images/drop.png" onclick='$("#fileupload1").click()' value="Upload" /><br>
+						
+						{{ form.submit(class = "btn btn-primary form-group", value = "Upload") }}
+					</form>
+				</div>
+			</div>
+		</div>
+	</center>
+
+{% endblock %}
