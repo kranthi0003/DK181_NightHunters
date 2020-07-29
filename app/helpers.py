@@ -6,6 +6,7 @@ from timeit import default_timer as timer
 import time
 from rake_nltk import Rake
 import re
+import docx2txt
 import nltk.data
 
 from transformers import BertTokenizer, TFBertForQuestionAnswering
@@ -25,19 +26,32 @@ tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 def allowed_extension(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
+
 def convert_to_text(filename):
-	pdfFileObj = open('data\\'+filename, 'rb')
-	pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
-	#print("Number of pages:-"+str(pdfReader.numPages))
-	num = pdfReader.numPages
-	i =0
-	#file_res = open('G:/Projects/SIH/Project/SIH/converts/'+filename.split('.')[0]+'.txt','w',encoding='UTF-8')
-	file_res = open('data\\'+filename.split('.')[0]+'.txt','w',encoding='UTF-8')
-	while(i<num):
-		pageObj = pdfReader.getPage(i)
-		text=pageObj.extractText()
-		file_res.write("\n\nPage: "+str(i+1)+"\n\n"+text)
-		i+=1
+	extension = filename.split('.')[1]
+	source_file = 'data\\books\\'+filename
+	destination_file = 'data\\converted_books\\'+filename.split('.')[0]+'.txt'
+
+	# pdf to txt...
+	if(extension == 'pdf'):
+		pdfFileObj = open(source_file, 'rb')
+		pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+		num = pdfReader.numPages
+		i =0
+		file_res = open(destination_file,'w',encoding='UTF-8')
+		while(i<num):
+			pageObj = pdfReader.getPage(i)
+			text=pageObj.extractText()
+			file_res.write('\n\nPage: '+str(i+1)+'\n\n'+text)
+			i=i+1
+		pdfFileObj.close()
+
+	# docx to txt...
+	elif(extension == 'docx'):
+		text = docx2txt.process(source_file)
+		f = open(destination_file,"w+")
+		f.write(text)
 
 
 def extract_keywords(text):

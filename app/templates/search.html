@@ -2,26 +2,27 @@
 
 {% block content %}
 
-	<h2>Ask your Question!</h2>
-	<form method="POST" action="#" enctype="multipart/form-data">
-		{{ form.hidden_tag() }}
-		<p>
-			{{ form.index.label }}<br>
-			{{ form.index() }}
-			{% for error in form.index.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-        	{{ form.query.label }}<br>
-        	{{ form.query() }}
-        	{% for error in form.query.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-        	{{ form.submit() }}
-        </p>
-    </form>
+    <div class="container  fileuploader ">
+        <div class="row justify-content-center"></div>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form method="POST" action="#" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+
+                    <div class="form-group"><br><br>
+                        <label class="align-baseline"><b>Name of the Book</b></label>
+                        {{ form.index }}
+                    </div>
+
+                    <div class="form-group"><br><br>
+                        <label class="align-baseline"><b>Have a Question?</label>
+                        {{ form.query(class="form-control qinput", placeholder="Ask your Question here") }}
+                    </div>
+
+                    {{ form.submit(class="btn btn-primary form-group") }}
+                </form>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
