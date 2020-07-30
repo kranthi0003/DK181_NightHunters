@@ -1,4 +1,4 @@
-from flask import render_template, redirect, flash, url_for, request
+from flask import render_template, redirect, flash, url_for, request, session
 from app import app
 from app.forms import UploadForm, SearchForm
 from werkzeug.utils import secure_filename
@@ -7,51 +7,84 @@ import os
 
 import app.helpers as myfunctions
 
+books = []
 
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
 def index():
+	books = myfunctions.get_indices()
+	books = sorted(books)
 	form = UploadForm()
 	if((form.validate_on_submit()) and ('submit' in request.form)):
 		file = request.files['file']
 		if(file.filename == ''):
-			flash('No file selected for uploading')
-			return redirect(request.url)
+			print('No file selected for uploading')
 
 		# checking if the uploaded file extension is allowed...
-		if(file and myfunctions.allowed_extension(file.filename)):
+		elif(file and myfunctions.allowed_extension(file.filename)):
 			filename = secure_filename(file.filename)
-			flash('Book "{}" uploaded successfully!'.format(form.name.data))
+			print('Book "{}" uploaded successfully!'.format(form.name.data))
 
 			# converting any type of document into txt...
-			if(filename.split('.')[1] != 'txt'):
-				myfunctions.convert_to_text(filename)
+			myfunctions.convert_to_text(filename)
 			filename = filename.split('.')[0]
 
 			# elasticsearch indexing...
 			index = form.name.data
-			myfunctions.indexing(index, filename)
+			myfunctions.index_docs(index, filename)
+			books = myfunctions.get_indices()
+			books = sorted(books)
+			print(books)
+			print('Indexing done')
 
 		else:
-			flash('Allowed file types are txt, pdf, docx')
-			return redirect(request.url)
+			print('Allowed file types are txt, pdf, docx')
 
-	return render_template('index.html', title='Upload', form=form)
+	return render_template('index.html', title='Upload', form=form, books=books)
 
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
+	books = myfunctions.get_indices()
+	books = sorted(books)
 	form = SearchForm()
+
+	print(request.args.get('index'))
+
 	if((form.validate_on_submit()) and ('submit' in request.form)):
-		index = form.index.data
+		index = request.args.get('index', form.index.data)
 		query = form.query.data
 
 		# keyword extraction...
-		query = myfunctions.extract_keywords(query)
-		print(query)
+		modified_query = myfunctions.extract_keywords(query)
 
 		# elasticsearch searching...
-		results = myfunctions.search_documents(index, query)
-		print(results)
+		results = myfunctions.retrieve_docs(index, modified_query)
+		time.sleep(10)
 
-	return render_template('search.html', title='Search', form=form)
+		# BERT QA
+		final_answer = myfunctions.get_answer(query, results[0])
+		print('hihello')
+		print(final_answer)
+		session['question'] = query
+		session['final_answer'] = final_answer
+		return redirect(url_for('answer'))
+
+
+	return render_template('search.html', title='Search', form=form, books=books)
+
+
+@app.route('/answer', methods=['GET', 'POST'])
+def answer():
+	print('Entered into answer()')
+	question = ''
+	answer = ''
+	if 'question' in session and 'final_answer' in session:
+		print("Session available")
+		question = session['question']
+		answer = session['final_answer']
+
+	else:
+		return redirect(url_for("search"))
+
+	return render_template('answer.html', question=question, answer=answer)

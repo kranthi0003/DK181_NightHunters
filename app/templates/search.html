@@ -1,3 +1,5 @@
+{% from "_macros.html" import get_index %}
+
 {% extends "base.html" %}
 
 {% block content %}
@@ -6,12 +8,17 @@
         <div class="row justify-content-center"></div>
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <form method="POST" action="#" enctype="multipart/form-data">
+                <form method="POST" action="/answer" enctype="multipart/form-data">
                     {{ form.hidden_tag() }}
 
                     <div class="form-group"><br><br>
                         <label class="align-baseline"><b>Name of the Book</b></label>
-                        {{ form.index }}
+                        
+                        {% if request.args.get('index') %}
+                            {{ form.index(value =  get_index()) }}
+                        {% else %}
+                            {{ form.index }}
+                        {% endif %}
                     </div>
 
                     <div class="form-group"><br><br>

@@ -1,3 +1,5 @@
+{% from "_macros.html" import displayBooks %}
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -10,14 +12,19 @@
 	  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+
+	    <script> 
+	        function fun(){ 
+	        	if(document.getElementById){
+	        		document.myForm.reset();
+	        	}
+	        } 
+    	</script>
 	</head>
 	<body>
 		<div class="sidenav">
-		    <h3 class="navtitle">Books</h3><hr>
-			<a href="#about">A</a>
-			<a href="#services">B</a>
-			<a href="#clients">C</a>
-			<a href="#contact">D</a>
+			<h3 class="navtitle">Books</h3><hr>
+			{{ displayBooks(books) }}
 		</div>
 
 		<nav class="navbar navbar-expand-md bg-dark navbar-dark">

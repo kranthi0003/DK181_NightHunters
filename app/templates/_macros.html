@@ -1,0 +1,10 @@
+{% macro displayBooks(books) %}
+{% for book in books %}
+	<a href = '{{ "search?index=" +  book }}'>{{ book }}</a>
+{% endfor %}
+{% endmacro %}
+
+
+{% macro get_index() %}
+{{request.args.get('index')}}
+{% endmacro %}
