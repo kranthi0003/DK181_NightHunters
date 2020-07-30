@@ -9,6 +9,8 @@ import time
 import app.helpers as myfunctions
 
 books = []
+sa = None
+la = None
 
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
@@ -39,16 +41,18 @@ def index():
 
 		else:
 			print('Allowed file types are txt, pdf, docx') #flash
-			#return redirect(request.url)
+		
+		return redirect(url_for('index'))
 
 	return render_template('index.html', title='Upload', form=form, books=books)
 
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
+	res = ''
 	books = myfunctions.get_indices()
 	form = SearchForm()
-	
+	print(request)
 	print(request.args.get('index'))
 	if((form.validate_on_submit()) and ('submit' in request.form)):
 		index = request.args.get('index', form.index.data)
@@ -60,8 +64,11 @@ def search():
 		# elasticsearch searching...
 		results = myfunctions.retrieve_docs(index, modified_query)
 		time.sleep(5)
-		sa = myfunctions.get_answer(query, results[0])
-		la = results[0]
+		if(form.types.data == 'sa'):
+			res = myfunctions.get_answer(query, results[0])
+		else:
+			res = results[0]
+		
 		'''
 		session['question'] = query
 		session['answer'] = answer
@@ -75,7 +82,7 @@ def search():
         elif(x==2):
             print('Answer:',l[0],'\n\n')
 		'''
-	return render_template('search.html', title='Search', form=form, books=books, sa=sa, la=la)
+	return render_template('search.html', title='Search', form=form, books=books, res=res)
 
 '''
 @app.route('/answer', methods=['GET', 'POST'])

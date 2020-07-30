@@ -10,21 +10,20 @@ import docx2txt
 import nltk.data
 import shutil
 from pdfminer.high_level import extract_text
-
+'''
 from transformers import BertTokenizer, TFBertForQuestionAnswering
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 import tensorflow as tf
-
+'''
 ALLOWED_EXTENSIONS = set(['txt', 'pdf'])
 
 es = Elasticsearch('http://localhost:9200')
 r = Rake()
-
+'''
 model_tokenizer = BertTokenizer.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
 model = TFBertForQuestionAnswering.from_pretrained('data\\models\\bert_large')
-
-
+'''
 tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 
 def allowed_extension(filename):
