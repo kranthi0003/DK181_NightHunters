@@ -5,8 +5,8 @@
 	<center>
 		<div class="container  fileuploader ">
 			<div class="row justify-content-center">
-				<div class="col-md-8 uploader">
-					<form method="POST" action="/index" class="justify-content-center" enctype="multipart/form-data">
+				<div class="col-md-8 uploader" name="upload" id="upload">
+					<form name="myForm" id="myForm" method="POST" action="/index" class="justify-content-center" enctype="multipart/form-data">
 						{{ form.hidden_tag() }}
 
 						{{ form.name.label }}
@@ -15,7 +15,7 @@
 						{{ form.file() }}
 						<input type="image" class="dropimg" src="../static/images/drop.png" onclick='$("#fileupload1").click()' value="Upload" /><br>
 						
-						{{ form.submit(class = "btn btn-primary form-group", value = "Upload") }}
+						{{ form.submit(class = "btn btn-primary form-group", value = "Upload", onSubmit = "fun()") }}
 					</form>
 				</div>
 			</div>

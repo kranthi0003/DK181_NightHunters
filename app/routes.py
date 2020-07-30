@@ -1,4 +1,4 @@
-from flask import render_template, redirect, flash, url_for, request
+from flask import render_template, redirect, flash, url_for, request, session
 from app import app
 from app.forms import UploadForm, SearchForm
 from werkzeug.utils import secure_filename
@@ -71,3 +71,18 @@ def search():
             print('Answer:',l[0],'\n\n')
 		'''
 	return render_template('search.html', title='Search', form=form, books=books)
+
+@app.route('/answer', methods=['GET', 'POST'])
+def answer():
+	print('Entered into answer()')
+	question = ''
+	answer = ''
+	if 'question' in session and 'final_answer' in session:
+		print("Session available")
+		question = session['question']
+		answer = session['final_answer']
+
+	else:
+		return redirect(url_for("search"))
+
+	return render_template('answer.html', question=question, answer=answer)
