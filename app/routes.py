@@ -60,8 +60,13 @@ def search():
 		# elasticsearch searching...
 		results = myfunctions.retrieve_docs(index, modified_query)
 		time.sleep(5)
-		print(myfunctions.get_answer(query, results[0]))
-		#return redirect(url_for('search'))
+		sa = myfunctions.get_answer(query, results[0])
+		la = results[0]
+		'''
+		session['question'] = query
+		session['answer'] = answer
+		return redirect(url_for('answer'))
+		'''
 		'''
 		print('Choose one.\n1. Short answer\n2. Long answer\n')
         x = int(input())
@@ -70,19 +75,23 @@ def search():
         elif(x==2):
             print('Answer:',l[0],'\n\n')
 		'''
-	return render_template('search.html', title='Search', form=form, books=books)
+	return render_template('search.html', title='Search', form=form, books=books, sa=sa, la=la)
 
+'''
 @app.route('/answer', methods=['GET', 'POST'])
 def answer():
-	print('Entered into answer()')
-	question = ''
-	answer = ''
-	if 'question' in session and 'final_answer' in session:
-		print("Session available")
+	print('Entered into answer')
+	print(session, type(session))
+	print()
+	print('question' in session)
+	
+	print("Session available")
+	if 'question' in session and 'answer' in session:
 		question = session['question']
-		answer = session['final_answer']
-
+		answer = session['answer']
+	
 	else:
 		return redirect(url_for("search"))
-
+	
 	return render_template('answer.html', question=question, answer=answer)
+'''
