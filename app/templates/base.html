@@ -1,77 +1,90 @@
 {% from "_macros.html" import displayBooks %}
 
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 	<head>
 		<title>Quester</title>
-		<meta charset="utf-8">
-	  	<meta name="viewport" content="width=device-width, initial-scale=1">
-	  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-	  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	  	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-	  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-	    <script> 
-	        function fun(){ 
-	        	if(document.getElementById){
-	        		document.myForm.reset();
-	        	}
-	        } 
-    	</script>
+		<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+				
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="../static/css/style.css">
+
+		<!--<script>
+			function set_visibility(){
+				document.getElementById("ans").style.display='block';
+			}
+		</script>-->
+
+		<script type="text/javascript">// <![CDATA[
+		        function loadingUpload(){
+		            $(".wrapUpload").show();
+		            $(".content").hide();       
+		        }
+			// ]]>	
+		</script>
+
+		<script type="text/javascript">// <![CDATA[
+		        function loadingSearch(){
+		            $(".wrapSearch").show();
+		            $(".content").hide();       
+		        }
+			// ]]>	
+		</script>
+
+
+		<!--<script >
+				$(document).ready(function() {
+					setTimeout(function() {
+					    $('.flashwrapper').fadeOut('fast');
+					}, 2000); // <-- time in milliseconds
+				});
+		</script>-->
+
 	</head>
+
 	<body>
-		<div class="sidenav">
-			<h3 class="navtitle">Books</h3><hr>
-			{{ displayBooks(books) }}
-		</div>
 
-		<nav class="navbar navbar-expand-md bg-dark navbar-dark">
-			<!-- Brand -->
-			<a class="navbar-brand" href="#"><img src="your-logo"/></a>
+		<!--<div class="loader-wrapper">
+			<p style="font-size: 20px;"><b>Uploading your book to our database...</b></p>
+	    	<span class="loader"><span class="loader-inner"></span></span>
+	    </div>-->
 
-			<!-- Toggler/collapsibe Button -->
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-				<span class="navbar-toggler-icon"></span>
-			</button>
+		<div class="content">
+		<div class="wrapper d-flex align-items-stretch">
+			<nav id="sidebar">
+				<div class="custom-menu">
+					<button type="button" id="sidebarCollapse" class="btn btn-primary">
+						<i class="fa fa-bars"></i>
+						<span class="sr-only">Toggle Menu</span>
+					</button>
+				</div>
 
-			<!-- Navbar links -->
-			<div class="collapse navbar-collapse mx-auto justify-content-md-center" id="collapsibleNavbar" >
-				<ul class="navbar-nav col-md-auto">
-					<li class="nav-item">
-						<a class="nav-link" href="#"><h3>Quester</h3></a>
-					</li>
-				</ul>
-			</div> 
-		</nav>
-
-		<nav class="navbar navbar-expand-md bg-dark navbar-dark">
-			<!-- Brand -->
-			<a class="navbar-brand" href="#"><img src="your-logo"/></a>
-
-			<!-- Toggler/collapsibe Button -->
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-
-			<!-- Navbar links -->
-			<div class="collapse navbar-collapse mx-auto justify-content-md-center" id="collapsibleNavbar" >
-				<ul class="navbar-nav col-md-auto">
-					<li class="nav-item">
-						<a class="nav-link" href="{{ url_for('index') }}"><h4 class="activel">Upload a book</h4></a>
-					</li>
-				</ul>
-			</div> 
-
-			<div class="collapse navbar-collapse mx-auto justify-content-md-center" id="collapsibleNavbar" >
-				<ul class="navbar-nav col-md-auto">
-					<li class="nav-item">
-						<a class="nav-link" href="{{ url_for('search') }}"><h4 class="activel">Search</h4></a>
-					</li>
-				</ul>
-			</div> 
-		</nav>
+				<div class="p-4">
+		  			<h1><a href="{{ url_for('index') }}" class="logo">Quester <span>Study made simpler</span></a></h1>
+	        		<ul class="list-unstyled components mb-5" style="overflow: scroll;max-height: 600px;">
+	          			<li class="active">
+	            			<a href="{{ url_for('index') }}"><span class="fa fa-upload mr-3"></span> Upload </a>
+	          			</li>
+	          			<li>
+	              			<a href="{{ url_for('search') }}"><span class="fa fa-search mr-3"></span> Search</a>
+	          			</li>
+	          			<li>
+              				<a href="#"><span class="fa fa-book mr-3"></span> Books</a>
+	          			</li>
+	          			{{ displayBooks(books) }}
+	        		</ul>
+	        	</div>
+			</nav>
 
 		{% block content %}{% endblock %}
 

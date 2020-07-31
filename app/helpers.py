@@ -8,8 +8,9 @@ import shutil
 from timeit import default_timer as timer
 
 from elasticsearch import Elasticsearch, helpers
-from transformers import BertTokenizer, TFBertForQuestionAnswering
-import tensorflow as tf
+
+#from transformers import BertTokenizer, TFBertForQuestionAnswering
+#import tensorflow as tf
 
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
@@ -19,7 +20,7 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf'])
 es = Elasticsearch('http://localhost:9200')
 r = Rake()
 
-model_tokenizer = BertTokenizer.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
+#model_tokenizer = BertTokenizer.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
 
 
 ''' Uncomment the below two lines if executing for the first time '''
@@ -28,7 +29,7 @@ model_tokenizer = BertTokenizer.from_pretrained('bert-large-uncased-whole-word-m
 
 
 ''' Comment the below line if executing for the first time '''
-model = TFBertForQuestionAnswering.from_pretrained('data\\models')
+#model = TFBertForQuestionAnswering.from_pretrained('data\\models')
 
 tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 
