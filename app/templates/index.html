@@ -28,10 +28,27 @@
 			</center>
 		</div>
 	</div>
-
+	<!--<div class="modal"> Place at bottom of page </div>-->
     <script src="../static/js/jquery.min.js"></script>
     <script src="../static/js/popper.js"></script>
     <script src="../static/js/bootstrap.min.js"></script>
-    <script src="../static/js/main.js"></script>
+	<script src="../static/js/main.js"></script>
+	<!---<script>
+	$(document). ready(function() {
+		$("body").addClass(function(index, currentClass) {
+			var adclass
+			if(currentClass == "loading")
+				adclass = "loaded"
+			return adclass
+		})
+		$("body").removeClass(function(index, currentClass) {
+			var rmclass
+			if(currentClass == "loading")
+				rmclass = "loading"
+			return rmclass
+		})
+	})
+	</script>
+	-->
 
 {% endblock %}
