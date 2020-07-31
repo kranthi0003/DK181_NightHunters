@@ -1,8 +1,8 @@
 {% macro displayBooks(books) %}
 {% for book in books %}
-<!--<li class="active">-->
-<a href = '{{ "search?index=" +  book }}'><span class="active mr-3"></span><b> {{ book }}</b></a><br>
-<!--</li>-->
+<li class="active">
+<a href = '{{ "search?index=" +  book }}'><span class=" mr-3"></span><b>{{ book }}</b></a>
+</li>
 {% endfor %}
 {% endmacro %}
 

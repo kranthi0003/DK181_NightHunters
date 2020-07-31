@@ -2,53 +2,60 @@
 
 {% block content %}
 
-	<div id="content" class="p-4 p-md-5 pt-5">
-		<h2 class="mb-4">Upload</h2>
-			<center>
-				<div class="container  fileuploader ">
-					<div class="row justify-content-center">
-						<div class="col-md-8 uploader">
-							<form method="POST" action="/index" class="justify-content-center" enctype="multipart/form-data">
-								
-								{{ form.hidden_tag() }}
+    <div id="content" class="p-4 p-md-5 pt-5">
+        <h2 class="mb-4">Upload</h2>
+            <center>
+                <div class="container  fileuploader ">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 uploader">
+                            <form method="POST" action="/index" class="justify-content-center" enctype="multipart/form-data">
+                                
+                                {{ form.hidden_tag() }}
 
-								{{ form.file(id="fileupload1") }}
-								<!--<input type="file" id="fileupload1" required="" />-->
-								<input type="image" class="dropimg" src="../static/images/drop.png" onclick='$("#fileupload1").click()' value="Upload" /><br>
+                                {{ form.file(id="fileupload1") }}
+                                <!--<input type="file" id="fileupload1" required="" />-->
+                                <input type="image" class="dropimg" src="../static/images/drop.png" onclick='$("#fileupload1").click()' value="Upload" />
 
-                				<!--<input type="text" class="form-control qinput" placeholder="Enter book Name" required=""><br>-->
-								{{ form.name(class="form-control qinput", placeholder="Enter Book name") }}<br>
+                                <div class="flashwrapper">
+				                    {% with messages = get_flashed_messages(with_categories=True) %}
+				                        {% if messages %}
+				                            {% for category, message in messages %}
+				                                <div id=flashwrapper class="alert alert-{{ category }} alert-dismissible" role="alert">{{ message }}
+				                                <button type="button" class="close" data-dismiss="alert" aria-label="Close" onClick="close('flashwrapper')">
+				                                <span aria-hidden="true">&times;</span>
+				                                </div>
+				                            {% endfor %}
+				                        {% endif %}
+				                    {% endwith %}
+				                </div>
 
-                				<!--<input type="submit" value="Upload" name="Upload" class="btn btn-primary form-group">-->
-								{{ form.submit(class="btn btn-primary form-group", value = "Upload") }}
-							</form>
-						</div>
-					</div>
-				</div>
-			</center>
-		</div>
-	</div>
-	<!--<div class="modal"> Place at bottom of page </div>-->
+                                <!--<input type="text" class="form-control qinput" placeholder="Enter book Name" required=""><br>-->
+                                {{ form.name(class="form-control qinput", placeholder="Enter Book name") }}<br>
+
+                                <!--<input type="submit" value="Upload" name="Upload" class="btn btn-primary form-group">-->
+                                {{ form.submit(class="btn btn-primary form-group", value = "Upload", onclick="loadingUpload()") }}
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </center>
+        </div>
+    </div>
+
+    <!--<script src="../static/js/script.js"></script>-->
     <script src="../static/js/jquery.min.js"></script>
     <script src="../static/js/popper.js"></script>
     <script src="../static/js/bootstrap.min.js"></script>
-	<script src="../static/js/main.js"></script>
-	<!---<script>
-	$(document). ready(function() {
-		$("body").addClass(function(index, currentClass) {
-			var adclass
-			if(currentClass == "loading")
-				adclass = "loaded"
-			return adclass
-		})
-		$("body").removeClass(function(index, currentClass) {
-			var rmclass
-			if(currentClass == "loading")
-				rmclass = "loading"
-			return rmclass
-		})
-	})
-	</script>
-	-->
+    <script src="../static/js/main.js"></script>
+
+    </div>
+    </div>
+    <div class="wrapUpload" style="display: none">
+      <div class="loading">
+        <div class="bounceball"></div>
+        <div class="text"><p style="font-size: 20px"><b>UPLOADING YOUR BOOK TO OUR DATABASE...</b></p></div>
+      </div>
+    </div>
 
 {% endblock %}

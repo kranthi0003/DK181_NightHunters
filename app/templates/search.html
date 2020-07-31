@@ -6,46 +6,63 @@
 
     <div id="content" class="p-4 p-md-5 pt-5">
         <h2 class="mb-4">Search</h2>
-            <div class="container  fileuploader ">
-                <div class="row justify-content-center">
-                    <div class="col-md-6">
-                        <form method="POST" action="">
+        <div class="container  fileuploader ">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <form method="POST" action="/search" enctype="multipart/form-data">
 
-                            {{ form.hidden_tag() }}
+                        {{ form.hidden_tag() }}
 
-                            <div class="form-group"><br><br>
-                                {% if request.args.get('index') %}
-                                    <label class="align-baseline"><b>Book Name</b></label><br>
-                                    {{ form.index(value=get_index()) }}
-                                {% else %}
-                                    {{ form.index(class="form-control qinput", placeholder="Enter book Name") }}
-                                {% endif %}
-                            </div>
+                        <div class="form-group"><br><br>
+                            {% if request.args.get('index') %}
+                                <label class="align-baseline"><b>Book Name</b></label><br>
+                                {{ form.index(value =  get_index()) }}
+                            {% else %}
+                                {{ form.index(class="form-control qinput", placeholder="Enter book Name", style="border: 1px solid black;") }}
+                            {% endif %}
+                        </div>
 
-                            <div class="form-group"><br><br>
-                                {{ form.query(class="form-control qinput", placeholder="Ask your Question here", style="border: 1px solid black;height: 100px") }}
-                            </div>
-                            <div class="form-group">
-                                {{ form.types }}
-  					  	    </div>
-                            {{ form.submit(class="btn btn-primary form-group") }}
-                            <div class="form-group"><br><br>
-                                {% if res!='' %}
-                                    {{ form.answer(value=res, class="form-control qinput", id="ans", style="border: 1px solid black;height: 50px;") }}
-                                {% else %}
-                                    {{ form.answer(class="form-control qinput", id="ans", style="border: 1px solid black;height: 100px;display: none") }}
-                                {% endif %}
-                            </div>
-                        </form>
-                    </div>
+                        <div class="form-group"><br>
+                            {% if res!='' %}
+                                <label class="align-baseline"><b>Question</b></label><br>
+                            {% endif %}
+                            {{ form.query(class="form-control qinput", placeholder="Ask your Question here", style="border: 1px solid black;height: 60px") }}
+                        </div>
+
+                        <div>
+                            <label class="align-baseline"><b>Question Type</b></label>
+                            {{ form.types }}<br><br>
+                        </div>
+
+                        {{ form.submit(class="btn btn-primary form-group", onclick="loadingUpload()") }}
+
+                        <div class="form-group"><br>
+                            {% if res!='' %}
+                                <label class="align-baseline"><b>Answer</b></label><br>
+                                <textarea rows="4" cols="90" name="results" id="myTextArea"> {{ res }} </textarea>
+                            {% else %}
+                                <textarea name="results" id="myTextArea" style="display: none"></textarea>
+                            {% endif %}
+                        </div>
+
+                    </form>
                 </div>
             </div>
+        </div>
     </div>
 
-          
+    <!--<script src="../static/js/script.js"></script>-->
     <script src="../static/js/jquery.min.js"></script>
     <script src="../static/js/popper.js"></script>
     <script src="../static/js/bootstrap.min.js"></script>
     <script src="../static/js/main.js"></script>
+    </div>
+    </div>
+    <div class="wrapUpload" style="display: none">
+      <div class="loading">
+        <div class="bounceball"></div>
+        <div class="text"><p style="font-size: 20px"><b>SEARCHING FOR THE ANSWER...</b></p></div>
+      </div>
+    </div>
 
 {% endblock %}

@@ -4,50 +4,66 @@
 <html lang="en">
 	<head>
 		<title>Quester</title>
-		<meta charset="utf-8">
+		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 		<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 				
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="../static/css/style.css">
-		<script>
+
+		<!--<script>
 			function set_visibility(){
 				document.getElementById("ans").style.display='block';
 			}
- 
+		</script>-->
+
+		<script type="text/javascript">// <![CDATA[
+		        function loadingUpload(){
+					$(".wrapUpload").show();
+					console.log("hi")
+		            $(".contentx").hide();       
+		        }
+			// ]]>	
+
+			// <![CDATA[
+			function loadingSearch(){
+            $(".wrapSearch").show();
+            console.log("hello")
+            $(".contentx").hide();
+
+        	}
+        // ]]>	
 		</script>
+
 		
+
+
+		<!--<script >
+				$(document).ready(function() {
+					setTimeout(function() {
+					    $('.flashwrapper').fadeOut('fast');
+					}, 2000); // <-- time in milliseconds
+				});
+		</script>-->
+
 	</head>
 
-	<style type="text/css">
-		/* width */
-		::-webkit-scrollbar {
-		  width: 10px;
-		}
+	<body>
 
-		/* Track */
-		::-webkit-scrollbar-track {
-		  background: #f1f1f1; 
-		}
-		 
-		/* Handle */
-		::-webkit-scrollbar-thumb {
-		  background: #888; 
-		}
+		<!--<div class="loader-wrapper">
+			<p style="font-size: 20px;"><b>Uploading your book to our database...</b></p>
+	    	<span class="loader"><span class="loader-inner"></span></span>
+	    </div>-->
 
-		/* Handle on hover */
-		::-webkit-scrollbar-thumb:hover {
-		  background: #555; 
-		}
-	</style>
-
-	<body >
+		<div class="contentx">
 		<div class="wrapper d-flex align-items-stretch">
 			<nav id="sidebar">
 				<div class="custom-menu">
