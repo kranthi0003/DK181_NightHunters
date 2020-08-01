@@ -68,15 +68,13 @@ def search():
 		# elasticsearch searching...
 		results = myfunctions.retrieve_docs(index, modified_query)
 		time.sleep(5)
-
-		res = results[0]
-
-		'''
-		if(form.types.data == 'sa'):
+		if(len(results) == 0):
+			res = 'No answer found'
+		elif(form.types.data == 'sa'):
 			res = myfunctions.get_answer(query, results[0])
 		else:
 			res = results[0]
-		'''
+
 		
 
 		# BERT QA

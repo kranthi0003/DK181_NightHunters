@@ -30,7 +30,7 @@
 				                </div>
 
                                 <!--<input type="text" class="form-control qinput" placeholder="Enter book Name" required=""><br>-->
-                                {{ form.name(class="form-control qinput", placeholder="Enter Book name") }}<br>
+                                {{ form.name(class="form-control qinput", placeholder="Enter Book name", autocomplete="off") }}<br>
 
                                 <!--<input type="submit" value="Upload" name="Upload" class="btn btn-primary form-group">-->
                                 {{ form.submit(class="btn btn-primary form-group", value = "Upload", onclick="loadingUpload()") }}
