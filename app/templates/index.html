@@ -16,7 +16,7 @@
                                 <!--<input type="file" id="fileupload1" required="" />-->
                                 <input type="image" class="dropimg" src="../static/images/drop.png" onclick='$("#fileupload1").click()' value="Upload" />
 
-                                <div class="flashwrapper">
+                                <div class="flashwrap">
 				                    {% with messages = get_flashed_messages(with_categories=True) %}
 				                        {% if messages %}
 				                            {% for category, message in messages %}

@@ -124,6 +124,14 @@ def retrieve_docs(index, qsn):
     return l
 
 
+def multi_retrieve(books, qsn):
+    answers = []
+    for book in books:
+        print(book)
+        answers.append(retrieve_docs(book,qsn))
+    return answers
+
+
 
 def get_answer(question, text):
     input_dict = model_tokenizer(question, text, return_tensors='tf')

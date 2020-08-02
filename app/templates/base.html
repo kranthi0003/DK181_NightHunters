@@ -31,9 +31,8 @@
 		            $(".content").hide();       
 		        }
 			// ]]>	
-		</script>
 
-		<script type="text/javascript">// <![CDATA[
+			// <![CDATA[
 		        function loadingSearch(){
 		            $(".wrapSearch").show();
 		            $(".content").hide();       
@@ -77,6 +76,9 @@
 	          			</li>
 	          			<li>
 	              			<a href="{{ url_for('search') }}"><span class="fa fa-search mr-3"></span> Search</a>
+	          			</li>
+	          			<li>
+	              			<a href="{{ url_for('multisearch') }}"><span class="fa fa-search mr-3"></span> Multi-Search</a>
 	          			</li>
 	          			<li>
               				<a href="#"><span class="fa fa-book mr-3"></span> Books</a>
