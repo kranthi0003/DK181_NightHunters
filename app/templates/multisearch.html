@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="content" class="p-4 p-md-5 pt-5">
+        <h2 class="mb-4">Multi-Search</h2>
+            <div class="container  fileuploader ">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <form method="POST" action="/multisearch" enctype="multipart/form-data">
+
+                            {{ form.hidden_tag() }}
+
+                            <div class="form-group"><br><br>
+                                <label class="align-baseline"><b>Select books</b></label>
+                                {{ form.books }}<br>
+                            </div>
+
+                            <div class="form-group"><br>
+                                {% if res!='' %}
+                                    <label class="align-baseline"><b>Question</b></label><br>
+                                {% endif %}
+                                {{ form.query(class="form-control qinput", placeholder="Ask your Question here", style="border: 1px solid black;height: 60px") }}
+                            </div>
+
+                            <div>
+                                <label class="align-baseline"><b>Question Type</b></label>
+                                {{ form.types }}<br><br>
+                            </div>
+
+                            {{ form.submit(class="btn btn-primary form-group", onclick="loadingUpload()") }}
+
+                            <div class="form-group"><br>
+                                {% if res|length != 0 %}
+                                	{% for i in range(res|length) %}
+                                    	<label class="align-baseline"><b>{{ books[i] }}</b></label><br>
+                                    	<textarea rows="4" cols="90" name="results" id="myTextArea"> {{ res[i] }} </textarea>
+                                    {% endfor %}
+                                {% else %}
+                                    <textarea name="results" id="myTextArea" style="display: none"></textarea>
+                                {% endif %}
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--<script src="../static/js/script.js"></script>-->
+    <script src="../static/js/jquery.min.js"></script>
+    <script src="../static/js/popper.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/main.js"></script>
+
+    </div>
+
+    <div class="wrapUpload" style="display: none">
+      <div class="loading">
+        <div class="bounceball"></div>
+        <div class="text"><p style="font-size: 20px"><b>SEARCHING FOR THE ANSWERS...</b></p></div>
+      </div>
+    </div>
+
+{% endblock %}

@@ -2,12 +2,12 @@
 
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 
-/*body {
+body {
   position: relative;
   width: 100%;
   height: 100vh;
   font-family: Montserrat;
-}*/
+}
 
 .wrapUpload {
   position: absolute;
@@ -181,7 +181,7 @@
 }
 
 body {
-  overflow: hidden;
+  overflow: scroll;
 }
 .fileuploader{
         position: absolute;

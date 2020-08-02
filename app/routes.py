@@ -1,6 +1,6 @@
 from flask import render_template, redirect, flash, url_for, request, session
 from app import app
-from app.forms import UploadForm, SearchForm
+from app.forms import UploadForm, SearchForm, MultiSearchForm
 from werkzeug.utils import secure_filename
 import urllib.request
 import os
@@ -88,31 +88,50 @@ def search():
 		'''
 
 	return render_template('search.html', title='Search', form=form, books=books, res=res)
-
+	
 
 @app.route('/multisearch', methods=['GET', 'POST'])
 def multisearch():
+	form = MultiSearchForm()
 	books = myfunctions.get_indices()
 	books = sorted(books)
-	form = SearchForm()
-	res = ''
 
-	print(request.args.get('index'))
+	books_list = [(i, books[i]) for i in range(len(books))]
+	print(books_list)
+
+	d = {}
+	for x in books_list:
+		d[x[0]] = x[1]
+
+	form.books.choices = books_list
+	
+	#selected_books = form.books.data
+	res = []
 
 	if((form.validate_on_submit()) and ('submit' in request.form)):
-		print("form validated")
-		index = request.args.get('index', form.index.data)
-		query = form.query.data
+		sel_books = form.books.data
+		selected_books = []
+		for x in sel_books:
+			selected_books.append(d[x])
 
-		# keyword extraction...
+		print(form.books.data)
+		print(selected_books)
+		query = form.query.data
 		modified_query = myfunctions.extract_keywords(query)
 
-		# elasticsearch searching...
-		results = myfunctions.retrieve_docs(index, modified_query)
-		time.sleep(5)
-		if(len(results) == 0):
-			res = 'No answer found'
-		elif(form.types.data == 'sa'):
-			res = myfunctions.get_answer(query, results[0])
+		answers = myfunctions.multi_retrieve(selected_books, modified_query)
+		
+		for ans in answers:
+			res.append(ans[0])
+
+		'''
+		if(form.types.data == 'sa'):
+			for ans in answers:
+				res.append(myfunctions.get_answer(query, ans[0]))
 		else:
-			res = results[0]
+			for ans in answers:
+				res.append(ans[0])
+		'''
+		
+
+	return render_template('multisearch.html', title='Search', form=form, books=books, res=res)
