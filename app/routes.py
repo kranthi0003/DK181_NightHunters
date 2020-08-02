@@ -1,6 +1,6 @@
 from flask import render_template, redirect, flash, url_for, request, session
 from app import app
-from app.forms import UploadForm, SearchForm, MultiSearchForm
+from app.forms import UploadForm, SearchForm, MultiSearchForm, PPTForm
 from werkzeug.utils import secure_filename
 import urllib.request
 import os
@@ -68,13 +68,15 @@ def search():
 		# elasticsearch searching...
 		results = myfunctions.retrieve_docs(index, modified_query)
 		time.sleep(5)
-		if(len(results) == 0):
-			res = 'No answer found'
-		elif(form.types.data == 'sa'):
+
+		res = results
+
+		'''
+		if(form.types.data == 'sa'):
 			res = myfunctions.get_answer(query, results[0])
 		else:
 			res = results[0]
-
+		'''
 		
 
 		# BERT QA
@@ -88,7 +90,7 @@ def search():
 		'''
 
 	return render_template('search.html', title='Search', form=form, books=books, res=res)
-	
+
 
 @app.route('/multisearch', methods=['GET', 'POST'])
 def multisearch():
@@ -135,3 +137,25 @@ def multisearch():
 		
 
 	return render_template('multisearch.html', title='Search', form=form, books=books, res=res)
+
+
+@app.route('/generateppt', methods=['GET', 'POST'])
+def generateppt():
+	books = myfunctions.get_indices()
+	books = sorted(books)
+	form = PPTForm()
+
+	if((form.validate_on_submit()) and ('submit' in request.form)):
+		index = form.index.data
+		topic = form.topic.data
+		results = myfunctions.retrieve_docs(index, topic)
+
+		print(results)
+
+		slides = []
+		for res in results:
+			slides.append(myfunctions.get_summary(res))
+
+		print(slides)
+
+	return render_template('generateppt.html', form=form, books=books)

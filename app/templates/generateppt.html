@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="content" class="p-4 p-md-5 pt-5">
+        <h2 class="mb-4">PPT Generation</h2>
+            <div class="container  fileuploader ">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <form method="POST" action="/generateppt" enctype="multipart/form-data">
+
+                            {{ form.hidden_tag() }}
+
+                            <div class="form-group"><br><br>
+                                <label class="align-baseline"><b>Name of the Book</b></label>
+                                {{ form.index(class="form-control qinput", placeholder="Enter Book name") }}<br>
+                            </div>
+
+                            <div class="form-group"><br>
+                                <label class="align-baseline"><b>Topic</b></label><br>
+                                {{ form.topic(class="form-control qinput", placeholder="Enter a topic", style="border: 1px solid black;height: 60px") }}
+                            </div>
+
+                            {{ form.submit(class="btn btn-primary form-group", onclick="loadingUpload()") }}
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--<script src="../static/js/script.js"></script>-->
+    <script src="../static/js/jquery.min.js"></script>
+    <script src="../static/js/popper.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/main.js"></script>
+
+    </div>
+
+    <div class="wrapUpload" style="display: none">
+      <div class="loading">
+        <div class="bounceball"></div>
+        <div class="text"><p style="font-size: 20px"><b>GENERATING PPT...</b></p></div>
+      </div>
+    </div>
+
+{% endblock %}
