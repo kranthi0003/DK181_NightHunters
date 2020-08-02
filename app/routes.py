@@ -88,3 +88,31 @@ def search():
 		'''
 
 	return render_template('search.html', title='Search', form=form, books=books, res=res)
+
+
+@app.route('/multisearch', methods=['GET', 'POST'])
+def multisearch():
+	books = myfunctions.get_indices()
+	books = sorted(books)
+	form = SearchForm()
+	res = ''
+
+	print(request.args.get('index'))
+
+	if((form.validate_on_submit()) and ('submit' in request.form)):
+		print("form validated")
+		index = request.args.get('index', form.index.data)
+		query = form.query.data
+
+		# keyword extraction...
+		modified_query = myfunctions.extract_keywords(query)
+
+		# elasticsearch searching...
+		results = myfunctions.retrieve_docs(index, modified_query)
+		time.sleep(5)
+		if(len(results) == 0):
+			res = 'No answer found'
+		elif(form.types.data == 'sa'):
+			res = myfunctions.get_answer(query, results[0])
+		else:
+			res = results[0]

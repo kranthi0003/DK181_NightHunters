@@ -70,7 +70,7 @@ def extract_keywords(text):
 
 def index_docs(index, filename):
     data = ''
-    with open('data\\converted_books\\'+filename+'.txt','r',encoding='utf8') as reader:
+    with open('data\\converted_books\\'+filename+'.txt','r',encoding='utf-8') as reader:
         for line in reader:
             data += line
     subparas = []
@@ -109,6 +109,12 @@ def retrieve_docs(index, qsn):
     for x in result['hits']['hits']:
         l.append(x['_source']['text'])
     return l
+
+def multi_retrieve(books, qsn):
+    answers = []
+    for book in books:
+        answers.append(retrieve_docs(book,qsn))
+    return answers
 
 def get_answer(question, text):
     input_dict = model_tokenizer(question, text, return_tensors='tf')
