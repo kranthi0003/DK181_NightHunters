@@ -20,3 +20,8 @@ class MultiSearchForm(FlaskForm):
 	query = StringField('Question', validators=[InputRequired()])
 	types = SelectField('Select', choices=[('sa','Short Answer'),('la', 'Long Answer')])
 	submit = SubmitField('Search')
+
+class PPTForm(FlaskForm):
+	index = StringField('Name of the Book', validators=[InputRequired()])
+	topic = StringField('Enter a topic', validators=[InputRequired()])
+	submit = SubmitField('Generate PPT')
