@@ -90,6 +90,15 @@
 	        		</ul>
 	        	</div>
 			</nav>
+			<div id="navbarMenuHeroA" class="navbar-menu">
+ 				<div class="navbar-end">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('logout') }}" class="navbar-item">
+                            Logout
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
 
 		{% block content %}{% endblock %}
 

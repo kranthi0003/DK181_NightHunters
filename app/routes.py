@@ -1,19 +1,35 @@
-from flask import render_template, redirect, flash, url_for, request, session
+from flask import render_template, redirect, flash, url_for, request, session, Flask
 from app import app
-from app.forms import UploadForm, SearchForm, MultiSearchForm, PPTForm
+from app.forms import UploadForm, SearchForm, MultiSearchForm, PPTForm, LoginForm, RegisterForm
 from werkzeug.utils import secure_filename
 import urllib.request
 import os
 import time
+from . import db
+
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 import app.helpers as myfunctions
+from app.models import User
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+
+@login_manager.user_loader
+def load_user(user_id):
+	return User.query.get(int(user_id))
+
 
 books = []
 
-@app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
+@login_required
 def index():
-	books = myfunctions.get_indices()
+	username = current_user.username
+	books = myfunctions.get_user_books(username)
 	books = sorted(books)
 	form = UploadForm()
 	if((form.validate_on_submit()) and ('submit' in request.form)):
@@ -34,7 +50,8 @@ def index():
 			# elasticsearch indexing...
 			index = form.name.data
 			myfunctions.index_docs(index, filename)
-			books = myfunctions.get_indices()
+			myfunctions.index_book_to_user(username, index)
+			books = myfunctions.get_user_books(username)
 			books = sorted(books)
 			print(books)
 			print('Indexing done')
@@ -45,12 +62,14 @@ def index():
 
 		return redirect(url_for('index'))
 
-	return render_template('index.html', title='Upload', form=form, books=books)
+	return render_template('index.html', title='Upload', form=form, books=books, username=username)
 
 
 @app.route('/search', methods=['GET', 'POST'])
+@login_required
 def search():
-	books = myfunctions.get_indices()
+	username = current_user.username
+	books = myfunctions.get_user_books(username)
 	books = sorted(books)
 	form = SearchForm()
 	res = ''
@@ -60,6 +79,11 @@ def search():
 	if((form.validate_on_submit()) and ('submit' in request.form)):
 		print("form validated")
 		index = request.args.get('index', form.index.data)
+
+		if index not in books:
+			flash('Book "{}" not available in your library.'.format('index'))
+			return redirect(url_for('search'))
+
 		query = form.query.data
 
 		# keyword extraction...
@@ -77,25 +101,16 @@ def search():
 		else:
 			res = results[0]
 		'''
-		
-
-		# BERT QA
-		'''
-		print('Choose one.\n1. Short answer\n2. Long answer\n')
-		x = int(input())
-		if(x==1):
-			print('Answer:',bertqa.answer(qsn, l[0]),end='\n\n')
-		elif(x==2):
-			print('Answer:',l[0],'\n\n')
-		'''
 
 	return render_template('search.html', title='Search', form=form, books=books, res=res)
 
 
 @app.route('/multisearch', methods=['GET', 'POST'])
+@login_required
 def multisearch():
 	form = MultiSearchForm()
-	books = myfunctions.get_indices()
+	username = current_user.username
+	books = myfunctions.get_user_books(username)
 	books = sorted(books)
 
 	books_list = [(i, books[i]) for i in range(len(books))]
@@ -140,8 +155,10 @@ def multisearch():
 
 
 @app.route('/generateppt', methods=['GET', 'POST'])
+@login_required
 def generateppt():
-	books = myfunctions.get_indices()
+	username = current_user.username
+	books = myfunctions.get_user_books(username)
 	books = sorted(books)
 	form = PPTForm()
 
@@ -159,3 +176,48 @@ def generateppt():
 		print(slides)
 
 	return render_template('generateppt.html', form=form, books=books)
+
+
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+	form = LoginForm()
+
+	if(form.validate_on_submit() and 'submit' in request.form):
+		user = User.query.filter_by(username=form.username.data).first()
+		if user:
+			if check_password_hash(user.password, form.password.data):
+				login_user(user, remember=form.remember.data)
+				return redirect(url_for('index'))
+
+		flash('Please check your login details and try again.')
+		return redirect(url_for('login'))
+
+	return render_template('login.html', form=form)
+
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+	form = RegisterForm()
+
+	if(form.validate_on_submit() and 'submit' in request.form):
+		user = User.query.filter_by(username=form.username.data).first()
+		if user:
+			flash('User already exists')
+			return redirect(url_for('login'))
+
+		hashed_password = generate_password_hash(form.password.data, method='sha256')
+		new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+		db.session.add(new_user)
+		db.session.commit()
+
+		return redirect(url_for('login'))
+
+	return render_template('signup.html', form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+	logout_user()
+	return redirect(url_for('login'))
