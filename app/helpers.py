@@ -10,6 +10,8 @@ from timeit import default_timer as timer
 from elasticsearch import Elasticsearch, helpers
 
 import torch
+from transformers import BertTokenizer, TFBertForQuestionAnswering
+import tensorflow as tf
 
 from transformers import T5Tokenizer, T5ForConditionalGeneration, T5Config
 
@@ -33,7 +35,7 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf'])
 es = Elasticsearch('http://localhost:9200')
 r = Rake()
 
-#model_tokenizer = BertTokenizer.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
+model_tokenizer = BertTokenizer.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
 
 
 ''' Uncomment the below two lines if executing for the first time '''
@@ -42,7 +44,7 @@ r = Rake()
 
 
 ''' Comment the below line if executing for the first time '''
-#model = TFBertForQuestionAnswering.from_pretrained('data\\models\\bert_large')
+model = TFBertForQuestionAnswering.from_pretrained('data\\models\\bert_large')
 
 tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 
@@ -142,7 +144,7 @@ def index_book_to_user(index, filename):
     doc = {
         'book': filename
     }
-    res = es.index(index=index, body=doc)
+    es.index(index=index, body=doc)
 
 
 def get_user_books(index):
