@@ -9,6 +9,13 @@
             <div class="container  fileuploader ">
                 <div class="row justify-content-center">
                     <div class="col-md-6">
+                        {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <div class="notification is-danger">
+                                {{ messages[0] }}
+                            </div>
+                        {% endif %}
+                        {% endwith %}
                         <form method="POST" action="/search" enctype="multipart/form-data">
 
                             {{ form.hidden_tag() }}

@@ -1,29 +1,21 @@
-import PyPDF2
-from elasticsearch import Elasticsearch, helpers
-from timeit import default_timer as timer
-#import similarity as sim
-#from sih import bertqa
-import time
 from rake_nltk import Rake
-import re
+import PyPDF2
 import docx2txt
+import time
+import re
 import nltk.data
 import shutil
-from pdfminer.high_level import extract_text
-from transformers import BertTokenizer, TFBertForQuestionAnswering
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
-import tensorflow as tf
+from timeit import default_timer as timer
 
-
+from elasticsearch import Elasticsearch, helpers
 
 import torch
 
 from transformers import T5Tokenizer, T5ForConditionalGeneration, T5Config
 
 ''' Uncomment the below two lines if executing for the first time '''
-#model = T5ForConditionalGeneration.from_pretrained('t5-small')
-#model.save_pretrained('data\\models\\t5_small')
+#t5_model = T5ForConditionalGeneration.from_pretrained('t5-small')
+#t5_model.save_pretrained('data\\models\\t5_small')
 
 ''' Comment the below line if executing for the first time '''
 t5_model = T5ForConditionalGeneration.from_pretrained('data\\models\\t5_small')
@@ -33,27 +25,40 @@ device = torch.device('cpu')
 
 
 
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf'])
 
 es = Elasticsearch('http://localhost:9200')
 r = Rake()
 
-model_tokenizer = BertTokenizer.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
-model = TFBertForQuestionAnswering.from_pretrained('data\\models\\bert_large')
+#model_tokenizer = BertTokenizer.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
+
+
+''' Uncomment the below two lines if executing for the first time '''
+#model = TFBertForQuestionAnswering.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
+#model.save_pretrained('data\\models\\bert_large')
+
+
+''' Comment the below line if executing for the first time '''
+#model = TFBertForQuestionAnswering.from_pretrained('data\\models\\bert_large')
 
 tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+
+
 def allowed_extension(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 
 def convert_to_text(filename):
     extension = filename.split('.')[1]
     source_file = 'data\\books\\'+filename
     destination_file = 'data\\converted_books\\'+filename.split('.')[0]+'.txt'
 
-	# pdf to txt...
+    # pdf to txt...
     if(extension == 'pdf'):
-        '''
         pdfFileObj = open(source_file, 'rb')
         pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
         num = pdfReader.numPages
@@ -65,32 +70,34 @@ def convert_to_text(filename):
             file_res.write('\n\nPage: '+str(i+1)+'\n\n'+text)
             i=i+1
         pdfFileObj.close()
-        '''
-        text = extract_text(source_file)
-        time.sleep(5)
-        with open(destination_file,'w') as f:
-            f.write(text)
+    
 
-	# docx to txt...
+    # docx to txt...
     elif(extension == 'docx'):
         text = docx2txt.process(source_file)
         f = open(destination_file,"w+")
         f.write(text)
         f.close()
+
+
+    # txt file
     else:
         shutil.copy(source_file, 'data\\converted_books')
 
+
 def get_indices():
     return es.indices.get_alias("*")
+
 
 def extract_keywords(text):
     r.extract_keywords_from_text(text)
     return ' '.join(r.get_ranked_phrases())
 
 
+
 def index_docs(index, filename):
     data = ''
-    with open('data\\converted_books\\'+filename+'.txt','r',encoding='utf-8') as reader:
+    with open('data\\converted_books\\'+filename+'.txt','r',encoding='utf8') as reader:
         for line in reader:
             if(len(tokenizer.tokenize(line)) > 10):
                 data += line
@@ -112,11 +119,10 @@ def index_docs(index, filename):
     #start = timer()
     print('Indexing started')
     helpers.bulk(es, gen_data(), request_timeout=60)
-    print('Indexnig end')
     time.sleep(5)
     es.indices.refresh()
-    #end = timer()
-    #print(end-start)
+
+
 
 def retrieve_docs(index, qsn):
     result = es.search(index=index, body={
@@ -131,9 +137,33 @@ def retrieve_docs(index, qsn):
         l.append(x['_source']['text'])
     return l
 
+
+def index_book_to_user(index, filename):
+    doc = {
+        'book': filename
+    }
+    res = es.index(index=index, body=doc)
+
+
+def get_user_books(index):
+    l = []
+    if es.indices.exists(index=index):
+        res = es.search(index=index, body={
+            "query":{
+                "match_all":{}
+            }
+        })
+
+        for doc in res['hits']['hits']:
+            l.append(doc['_source']['book'])
+
+    return l
+
+
 def multi_retrieve(books, qsn):
     answers = []
     for book in books:
+        print(book)
         answers.append(retrieve_docs(book,qsn))
     return answers
 
@@ -156,6 +186,7 @@ def get_summary(text):
     print ("\n\nSummarized text: \n",output)
     return output
 
+
 def get_answer(question, text):
     input_dict = model_tokenizer(question, text, return_tensors='tf')
     start_scores, end_scores = model(input_dict)
@@ -170,29 +201,3 @@ def get_answer(question, text):
         else:
             answer += ' ' + tokens[i]
     return answer
-'''
-if __name__ == "__main__":
-    #index = input("Name of the book")
-    index = "four_book"
-    index_docs(index, "test2")
-    es.indices.refresh()
-    time.sleep(5)
-    qsn = None
-    while(qsn != 'exit'):
-        qsn = input("Question?\n")
-        modified_qsn = extract_keywords(qsn)
-        print(modified_qsn)
-        l = retrieve_docs(index,modified_qsn)
-        time.sleep(5)
-        #print(qsn)
-        for x in l:
-            #print('context:',x,'Score:',sim.similar(x,qsn))
-            print('context: ',x, end='\n\n')
-        
-        print('Choose one.\n1. Short answer\n2. Long answer\n')
-        x = int(input())
-        if(x==1):
-            print('Answer:',bertqa.answer(qsn, l[0]),end='\n\n')
-        elif(x==2):
-            print('Answer:',l[0],'\n\n')
-'''

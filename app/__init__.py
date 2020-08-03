@@ -1,7 +1,12 @@
 from flask import Flask
-from app.config import Config
+from flask_sqlalchemy  import SQLAlchemy
+from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
+db = SQLAlchemy(app)
+
 from app import routes
-app.run(debug=False)
+
+if(__name__ == '__main__'):
+	app.run(debug=True)
