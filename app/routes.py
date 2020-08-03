@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 import urllib.request
 import os
 import time
-
+from pptx import Presentation
 import app.helpers as myfunctions
 
 books = []
@@ -69,14 +69,14 @@ def search():
 		results = myfunctions.retrieve_docs(index, modified_query)
 		time.sleep(5)
 
-		res = results
+		#res = results
 
-		'''
+		
 		if(form.types.data == 'sa'):
 			res = myfunctions.get_answer(query, results[0])
 		else:
 			res = results[0]
-		'''
+		
 		
 
 		# BERT QA
@@ -122,18 +122,18 @@ def multisearch():
 		modified_query = myfunctions.extract_keywords(query)
 
 		answers = myfunctions.multi_retrieve(selected_books, modified_query)
-		
+		'''
 		for ans in answers:
 			res.append(ans[0])
-
 		'''
+		
 		if(form.types.data == 'sa'):
 			for ans in answers:
 				res.append(myfunctions.get_answer(query, ans[0]))
 		else:
 			for ans in answers:
 				res.append(ans[0])
-		'''
+		
 		
 
 	return render_template('multisearch.html', title='Search', form=form, books=books, res=res)
@@ -150,12 +150,28 @@ def generateppt():
 		topic = form.topic.data
 		results = myfunctions.retrieve_docs(index, topic)
 
-		print(results)
+		#print(results)
 
 		slides = []
-		for res in results:
-			slides.append(myfunctions.get_summary(res))
+		cnt = 0
+		while(cnt < len(results)):
+			curr = ''.join(results[cnt:cnt+3])
+			slides.append(myfunctions.get_summary(curr))
+			cnt+=3
+		#for res in results: 
+		#	slides.append(myfunctions.get_summary(res))
 
-		print(slides)
+		
+		prs = Presentation()
+		bullet_slide_layout = prs.slide_layouts[1]
+		for i in range(3):
+			slide = prs.slides.add_slide(bullet_slide_layout)
+			shapes = slide.shapes
+			body_shape = shapes.placeholders[1]
+			tf = body_shape.text_frame
+			tf.text = slides[i]
+
+		prs.save(str(index)+'.pptx')
+		print(str(index)+'.pptx')
 
 	return render_template('generateppt.html', form=form, books=books)

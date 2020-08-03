@@ -17,7 +17,6 @@ import tensorflow as tf
 
 
 
-
 import torch
 
 from transformers import T5Tokenizer, T5ForConditionalGeneration, T5Config
@@ -27,9 +26,9 @@ from transformers import T5Tokenizer, T5ForConditionalGeneration, T5Config
 #model.save_pretrained('data\\models\\t5_small')
 
 ''' Comment the below line if executing for the first time '''
-model = T5ForConditionalGeneration.from_pretrained('data\\models\\t5_small')
+t5_model = T5ForConditionalGeneration.from_pretrained('data\\models\\t5_small')
 
-tokenizer = T5Tokenizer.from_pretrained('t5-small')
+t5_tokenizer = T5Tokenizer.from_pretrained('t5-small')
 device = torch.device('cpu')
 
 
@@ -93,7 +92,8 @@ def index_docs(index, filename):
     data = ''
     with open('data\\converted_books\\'+filename+'.txt','r',encoding='utf-8') as reader:
         for line in reader:
-            data += line
+            if(len(tokenizer.tokenize(line)) > 10):
+                data += line
     subparas = []
     for p in re.split(r"\n\n|\n\t|\n   *", data):
         lines = tokenizer.tokenize(p)
@@ -135,25 +135,24 @@ def multi_retrieve(books, qsn):
     answers = []
     for book in books:
         answers.append(retrieve_docs(book,qsn))
-    return 
+    return answers
 
 
 def get_summary(text):
     preprocess_text = text.strip().replace("\n","")
     t5_prepared_Text = "summarize: " + preprocess_text
-    print ("original text preprocessed: \n", preprocess_text)
 
-    tokenized_text = tokenizer.encode(t5_prepared_Text, return_tensors="pt").to(device)
+    tokenized_text = t5_tokenizer.encode(t5_prepared_Text, return_tensors="pt").to(device)
 
-    summary_ids = model.generate(tokenized_text,
+    summary_ids = t5_model.generate(tokenized_text,
                                         num_beams=4,
                                         no_repeat_ngram_size=2,
                                         min_length=30,
                                         max_length=100,
                                         early_stopping=True)
 
-    output = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
-
+    output = t5_tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+    
     print ("\n\nSummarized text: \n",output)
     return output
 
