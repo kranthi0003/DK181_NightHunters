@@ -7,11 +7,11 @@ import os
 import time
 from . import db
 
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-
 import app.helpers as myfunctions
 from app.models import User
+
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 login_manager = LoginManager()
 login_manager.init_app(app)
